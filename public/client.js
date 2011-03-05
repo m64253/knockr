@@ -14,9 +14,12 @@
 		this._board.style.height = this.height + 'px';
 		document.body.appendChild(this._board);
 		
-		// Delegate the Transition End event, only on webkit
-		//this._board.addEventListener('webkitTransitionEnd', _.bind(this.transitionEnd, this), false);
-		
+		// Delegate the Transition End event
+		if (Modernizr.csstransitions) {
+			this._board.addEventListener('webkitTransitionEnd', _.bind(this.transitionEnd, this), false);
+			this._board.addEventListener('transitionend', _.bind(this.transitionEnd, this), false);
+			this._board.addEventListener('oTransitionEn', _.bind(this.transitionEnd, this), false);
+		}
 		
 		// List
 		this._list = document.createElement('ul');
@@ -46,8 +49,8 @@
 		
 		initPlayer: function() {
 			this.player.id = this._socket.transport.sessionid;
-			//this.player.name = prompt('What\'s your name?').toLowerCase() || '?';
-			this.player.name = window.navigator.userAgent.split(/\s/).pop();
+			this.player.name = prompt('What\'s your name?').toLowerCase() || '?';
+			//this.player.name = window.navigator.userAgent.split(/\s/).pop();
 			this.player.color = randomColor();
 			
 			this.create(this.player);
@@ -149,11 +152,15 @@
 					ball.className = 'killed';
 					ball.style.left = '-1000px';
 					ball.style.top = '-1000px';
-					setTimeout(_.bind(function(){
-						this.transitionEnd({
-							target: ball
-						});
-					}, this), 200);
+					
+					// Simulate Transition End Event 
+					if (!Modernizr.csstransitions) {
+						setTimeout(_.bind(function simulateTransitionEndEvent(){
+							this.transitionEnd({
+								target: ball
+							});
+						}, this), 200);
+					}
 				}
 			}
 		},
