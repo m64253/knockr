@@ -17,7 +17,6 @@
 		// Delegate the Transition End event, only on webkit
 		//this._board.addEventListener('webkitTransitionEnd', _.bind(this.transitionEnd, this), false);
 		
-		
 		// List
 		this._list = document.createElement('ul');
 		this._board.appendChild(this._list);
